@@ -324,6 +324,7 @@ def prepare_toolchain(src_paths, build_dir, target, toolchain_name,
     Keyword arguments:
     macros - additional macros
     clean - Rebuild everything if True
+    hex - produces intel hex file if true
     jobs - how many compilers we can run at once
     notify - Notify function for logs
     silent - suppress printing of progress indicators
@@ -454,7 +455,7 @@ def scan_resources(src_paths, toolchain, dependencies_paths=None,
 
 def build_project(src_paths, build_path, target, toolchain_name,
                   libraries_paths=None, linker_script=None,
-                  clean=False, notify=None, verbose=False, name=None,
+                  clean=False, hex=False, notify=None, verbose=False, name=None,
                   macros=None, inc_dirs=None, jobs=1, silent=False,
                   report=None, properties=None, project_id=None,
                   project_description=None, extra_verbose=False, config=None,
@@ -472,6 +473,7 @@ def build_project(src_paths, build_path, target, toolchain_name,
     libraries_paths - The location of libraries to include when linking
     linker_script - the file that drives the linker to do it's job
     clean - Rebuild everything if True
+    hex - Output intel hex file if True
     notify - Notify function for logs
     verbose - Write the actual tools command lines used if True
     name - the name of the project
@@ -542,14 +544,14 @@ def build_project(src_paths, build_path, target, toolchain_name,
 
         # Link Program
         if toolchain.config.has_regions:
-            res, _ = toolchain.link_program(resources, build_path, name + "_application")
+            res, _ = toolchain.link_program(resources, build_path, name + "_application", hex)
             region_list = list(toolchain.config.regions)
             region_list = [r._replace(filename=res) if r.active else r
                            for r in region_list]
             res = join(build_path, name) + ".bin"
             merge_region_list(region_list, res)
         else:
-            res, _ = toolchain.link_program(resources, build_path, name)
+            res, _ = toolchain.link_program(resources, build_path, name, hex)
 
         memap_instance = getattr(toolchain, 'memap_instance', None)
         memap_table = ''

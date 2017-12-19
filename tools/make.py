@@ -85,6 +85,13 @@ if __name__ == '__main__':
         help="Verbose diagnostic output")
 
     parser.add_argument(
+        "-H", "--hex",
+        action="store_true",
+        dest="hex",
+        default=False,
+        help="Output hex file")
+
+    parser.add_argument(
         "--silent",
         action="store_true",
         dest="silent",
@@ -281,6 +288,7 @@ if __name__ == '__main__':
                                      set(test.dependencies),
                                      linker_script=options.linker_script,
                                      clean=options.clean,
+                                     hex=options.hex,
                                      verbose=options.verbose,
                                      notify=notify,
                                      report=build_data_blob,

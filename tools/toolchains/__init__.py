@@ -1108,7 +1108,7 @@ class mbedToolchain:
 
         return needed_update
 
-    def link_program(self, r, tmp_path, name):
+    def link_program(self, r, tmp_path, name, output_hex):
         needed_update = False
         ext = 'bin'
         if hasattr(self.target, 'OUTPUT_EXT'):
@@ -1129,6 +1129,7 @@ class mbedToolchain:
         elf = join(tmp_path, name + '.elf')
         bin = None if ext is 'elf' else join(tmp_path, filename)
         map = join(tmp_path, name + '.map')
+        hex = None if not output_hex else join(tmp_path, name+'.hex')
 
         r.objects = sorted(set(r.objects))
         config_file = ([self.config.app_config_location]
@@ -1144,6 +1145,8 @@ class mbedToolchain:
             needed_update = True
             self.progress("elf2bin", name)
             self.binary(r, elf, bin)
+            if hex:
+                self.binary(r, elf, hex)
 
         # Initialize memap and process map file. This doesn't generate output.
         self.mem_stats(map)
